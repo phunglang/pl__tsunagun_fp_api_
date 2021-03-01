@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Events\MessageSent;
 use App\Helpers\FileManage;
 use App\Models\Message;
+use App\Models\User;
 use App\Notifications\PushChatNotification;
 use Illuminate\Support\Facades\Auth;
 use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
@@ -19,7 +20,7 @@ class MessageRepository extends BaseRepository
      *  Return the model
      */
     public function model()
-    {  
+    {
         return  Message::class;
     }
 
@@ -36,6 +37,9 @@ class MessageRepository extends BaseRepository
         if(!empty($dataRequest['messageText']))
         $dataInsertMess['content'] = $dataRequest['messageText'];
         $message = $this->model->create($dataInsertMess);
+        $user->push('chat_user_ids',$dataRequest['idUserEndPoint'], true);
+        $userClient = User::find($dataRequest['idUserEndPoint']);
+        $userClient->push('chat_user_ids',Auth::id(), true);
         if(!empty($dataRequest['imageFile'])) {
             foreach ($dataRequest['imageFile'] as $item) {
                 $imageFileName = time().'.'.$item->getClientOriginalExtension();
@@ -53,15 +57,16 @@ class MessageRepository extends BaseRepository
     public function conversationDetail($dataRequest){
 
         $id = $dataRequest['idUserEndPoint'];
-        return $this->model->where(function ($q) use ($id) {
-                $q->where('own_id', Auth::id());
-                $q->where('client_id', $id);
-            })->orWhere(function ($q) use ($id) {
-                $q->where('own_id', $id);
-                $q->where('client_id', Auth::id());
-            })
-            ->with('getFiles')
-            ->get();
-
+        return $this->model
+                    ->where(function ($q) use ($id) {
+                        $q->where('own_id', Auth::id());
+                        $q->where('client_id', $id);
+                    })
+                    ->orWhere(function ($q) use ($id) {
+                        $q->where('own_id', $id);
+                        $q->where('client_id', Auth::id());
+                    })
+                    ->with('getFiles')
+                    ->get();
     }
 }

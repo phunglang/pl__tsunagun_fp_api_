@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Validation\Rule;
 class RegisterEmailRequest extends FormRequest
 {
     protected $id;
@@ -30,7 +30,22 @@ class RegisterEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email:rfc,dns|max: 50|unique:users,email,'.$this->id.',_id,is_deleted,false'
+            'email' => [
+                'required',
+                'email:rfc,dns',
+                'max: 50',
+                Rule::unique('users')->where(fn($query) =>
+                        $query
+                            ->where('email', $this->email)
+                            ->where(fn($q) =>
+                                $q
+                                    ->where('is_deleted', false)
+                                    ->orWhereNull('is_deleted')
+                            )
+                            ->where('_id', '<>', $this->id)
+                        // 'unique:users,email,'.$this->id.',_id,is_deleted,false'
+                )
+            ]
         ];
     }
 }

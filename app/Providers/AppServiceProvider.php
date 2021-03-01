@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -49,5 +51,6 @@ class AppServiceProvider extends ServiceProvider
                 'pageName' => $pageName,
             ]);
         });
+        User::observe(UserObserver::class);
     }
 }

@@ -37,7 +37,6 @@ class User extends Authenticatable
         'birthday',
         'comment', //search like
         'websites',
-        'image',
         'ID_validate',
         'is_deleted',
         'note',

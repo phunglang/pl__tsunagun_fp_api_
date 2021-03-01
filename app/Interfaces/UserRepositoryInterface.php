@@ -11,6 +11,8 @@ interface UserRepositoryInterface
     public function getUsers();
     public function getListContact();
     public function blockUser($dataRequest);
+    public function hiddenUser($dataRequest);
+    public function getListUserHidden();
     public function getLikes(array $query);
     public function find($id);
     public function listBlock();

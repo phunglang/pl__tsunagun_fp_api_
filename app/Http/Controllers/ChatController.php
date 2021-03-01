@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
 use App\Http\Requests\BlockRequest;
+use App\Http\Requests\HiddenRequest;
 use App\Http\Requests\MessageRequest;
 use App\Http\Requests\ReportRequest;
 use App\Interfaces\UserRepositoryInterface;
@@ -24,7 +25,7 @@ class ChatController extends Controller
     public function __construct(ReportRepository $reportRepository,UserRepositoryInterface $userRepository,MessageRepository $messageRepository) {
         $this->reportRepository = $reportRepository;
         $this->userRepository = $userRepository;
-        $this->messageRepository = $messageRepository;//
+        $this->messageRepository = $messageRepository;
     }
 
     /**
@@ -83,12 +84,44 @@ class ChatController extends Controller
     public function sendBlock(BlockRequest $request)
     {
         $dataRequest = $request->only('idUserReported');
-
         $this->userRepository->blockUser($dataRequest);
         return response()->json([
             'message' => 'Success',
         ], 200);
     }
+
+    /**
+     * Block User .
+     * By Trong Luật
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sendHidden(HiddenRequest $request)
+    {
+        $dataRequest = $request->only('idUserHidden');
+        $this->userRepository->hiddenUser($dataRequest);
+        return response()->json([
+            'message' => 'Success',
+        ], 200);
+    }
+
+
+    /**
+     * Block User .
+     * By Trong Luật
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getListUserHidden(Request $request)
+    {
+        $dataRequest = $request->only('idUserHidden');
+        $this->userRepository->hiddenUser($dataRequest);
+        return response()->json([
+            'message' => 'Success',
+        ], 200);
+    }
+
+    
 
      /**
      * send mess .

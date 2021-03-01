@@ -3,8 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use App\Interfaces\UserRepositoryInterface;
 use App\Models\Like;
+use App\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 /**
  * Class UserRepository.
@@ -27,7 +27,7 @@ class UserRepository implements UserRepositoryInterface
     public function getListContact() {
         $listIdUserChat =  Auth::user()->chat_user_ids;
         if (!empty($listIdUserChat)) {
-            return $this->model->whereIn('_id', $listIdUserChat)->paginate(3);
+            return $this->model->whereIn('_id', $listIdUserChat)->paginate(100);
         }
         return [];
     }
@@ -35,6 +35,19 @@ class UserRepository implements UserRepositoryInterface
     public function blockUser($dataRequest) {
         $own = Auth::user();
         $own->push('block_user_ids', $dataRequest['idUserReported'], true);
+    }
+
+    public function hiddenUser($dataRequest) {
+        $own = Auth::user();
+        $own->push('hidden_user_ids', $dataRequest['idUserHidden'], true);
+    }
+
+    public function getListUserHidden() {
+        $listIdUserHidden =  Auth::user()->hidden_user_ids;
+        if (!empty($listIdUserHidden)) {
+            return $this->model->whereIn('_id', $listIdUserHidden)->paginate(10);
+        }
+        return [];
     }
 
     public function checkUserByCredentials($query) {

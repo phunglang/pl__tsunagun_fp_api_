@@ -70,13 +70,14 @@ Route::middleware('auth:api')->group(function () {
         Route::post('reports/update', [UserCtr::class, 'updateReport']);
     });
 
-
     Route::prefix('chat')->group(function () {
         Route::get('/', [ChatCtr::class, 'index']);
         Route::get('/conversation-detail', [ChatCtr::class, 'conversationDetail']);
         Route::get('/count-mess', [ChatCtr::class, 'countMess']);
         Route::post('/send-report', [ChatCtr::class, 'sendReport']);
         Route::post('/send-block', [ChatCtr::class, 'sendBlock']);
+        Route::post('/send-hidden', [ChatCtr::class, 'sendHidden']);
+        Route::get('/get-list-user-hidden', [ChatCtr::class, 'getListUserHidden']);
         Route::post('/send-mess', [ChatCtr::class, 'sendMess']);
     });
 
